@@ -160,7 +160,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking }) => {
               marginBottom: '1.25rem'
             }}
           >
-            Senyum Sehat & Indah Dimulai dari <span className="text-gradient">OGII DENTAL</span>
+            Klinik Gigi OGII DENTAL — Dokter Gigi Spesialis di <span className="text-gradient">Jakarta</span>
           </h1>
 
           {/* Sub-headline */}

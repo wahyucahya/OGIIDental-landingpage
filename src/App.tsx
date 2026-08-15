@@ -8,6 +8,7 @@ import { GalleryTestimonialsFaq } from './components/GalleryTestimonialsFaq';
 import { Footer } from './components/Footer';
 import { BookingModal } from './components/BookingModal';
 import { LoadingScreen } from './components/LoadingScreen';
+import { SEO } from './components/SEO';
 import type { Doctor, Service, Schedule, Appointment } from './types';
 
 export function App() {
@@ -61,6 +62,9 @@ export function App() {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: 'var(--color-light-gray)' }}>
+      {/* Dynamic SEO Meta & LocalBusiness Structured Data */}
+      <SEO />
+
       {/* Fullscreen Initial Loading Screen */}
       {isLoading && <LoadingScreen />}
 
