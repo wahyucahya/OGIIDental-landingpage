@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   IconSchool, 
   IconAward, 
@@ -6,22 +6,61 @@ import {
   IconCalendarEvent, 
   IconX
 } from '@tabler/icons-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import { DOCTORS_DATA } from '../services/mockData';
 import type { Doctor } from '../types';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface DoctorsSectionProps {
   onSelectDoctor: (doctor: Doctor) => void;
 }
 
 export const DoctorsSection: React.FC<DoctorsSectionProps> = ({ onSelectDoctor }) => {
+  const sectionRef = useRef<HTMLDivElement>(null);
   const [activeDoctorModal, setActiveDoctorModal] = useState<Doctor | null>(null);
 
+  useGSAP(() => {
+    // Header reveal
+    gsap.fromTo('.gsap-doctors-header',
+      { opacity: 0, y: 40 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.gsap-doctors-header',
+          start: 'top 85%'
+        }
+      }
+    );
+
+    // Doctor Cards reveal
+    gsap.fromTo('.gsap-doctor-card',
+      { opacity: 0, y: 50 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.7,
+        stagger: 0.15,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.gsap-doctors-grid',
+          start: 'top 80%'
+        }
+      }
+    );
+  }, { scope: sectionRef });
+
   return (
-    <section id="doctors" className="section-padding" style={{ backgroundColor: 'var(--color-light-gray)' }}>
+    <section ref={sectionRef} id="doctors" className="section-padding" style={{ backgroundColor: 'var(--color-light-gray)' }}>
       <div className="container">
         
         {/* Section Header */}
-        <div style={{ textAlign: 'center', maxWidth: '42rem', margin: '0 auto 3.5rem auto' }}>
+        <div className="gsap-doctors-header" style={{ textAlign: 'center', maxWidth: '42rem', margin: '0 auto 3.5rem auto' }}>
           <span style={{
             fontSize: '0.875rem',
             fontWeight: 700,
@@ -40,7 +79,7 @@ export const DoctorsSection: React.FC<DoctorsSectionProps> = ({ onSelectDoctor }
         </div>
 
         {/* Doctors Grid */}
-        <div style={{
+        <div className="gsap-doctors-grid" style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
           gap: '2rem'
@@ -48,23 +87,26 @@ export const DoctorsSection: React.FC<DoctorsSectionProps> = ({ onSelectDoctor }
           {DOCTORS_DATA.map((doctor) => (
             <div
               key={doctor.id}
+              className="gsap-doctor-card"
               style={{
                 backgroundColor: 'var(--color-white)',
                 borderRadius: 'var(--radius-xl)',
                 overflow: 'hidden',
-                border: '1px solid var(--color-slate-300)',
-                boxShadow: 'var(--shadow-sm)',
+                border: 'none',
+                boxShadow: 'none',
                 display: 'flex',
                 flexDirection: 'column',
-                transition: 'all 0.3s ease'
+                transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-4px)';
-                e.currentTarget.style.boxShadow = 'var(--shadow-lg)';
+                e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(0, 0, 0, 0.08)';
+                e.currentTarget.style.borderColor = 'rgba(44, 122, 123, 0.3)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+                e.currentTarget.style.boxShadow = 'none';
+                e.currentTarget.style.borderColor = 'transparent';
               }}
             >
               {/* Doctor Image Container */}

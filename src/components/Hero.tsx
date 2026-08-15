@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { 
   IconCalendarCheck, 
   IconShieldCheck, 
@@ -6,23 +6,73 @@ import {
   IconStar,
   IconArrowRight
 } from '@tabler/icons-react';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 
 interface HeroProps {
   onOpenBooking: () => void;
 }
 
 export const Hero: React.FC<HeroProps> = ({ onOpenBooking }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out', duration: 0.9 } });
+
+    // Animate Hero Right Background & Wave
+    tl.fromTo('.hero-bg-right', 
+      { opacity: 0, scale: 1.1 }, 
+      { opacity: 1, scale: 1, duration: 1.4 }
+    )
+    .fromTo('.hero-wave-divider',
+      { opacity: 0, x: -30 },
+      { opacity: 1, x: 0, duration: 1 },
+      '-=1.2'
+    );
+
+    // Staggered reveal for Hero left text content
+    tl.fromTo('.gsap-hero-badge',
+      { opacity: 0, y: 25 },
+      { opacity: 1, y: 0 },
+      '-=0.8'
+    )
+    .fromTo('.gsap-hero-title',
+      { opacity: 0, y: 35 },
+      { opacity: 1, y: 0 },
+      '-=0.7'
+    )
+    .fromTo('.gsap-hero-subtitle',
+      { opacity: 0, y: 30 },
+      { opacity: 1, y: 0 },
+      '-=0.6'
+    )
+    .fromTo('.gsap-hero-actions',
+      { opacity: 0, y: 25 },
+      { opacity: 1, y: 0 },
+      '-=0.5'
+    )
+    .fromTo('.gsap-hero-trust-card',
+      { opacity: 0, y: 30, scale: 0.95 },
+      { opacity: 1, y: 0, scale: 1, ease: 'back.out(1.7)', duration: 0.7 },
+      '-=0.3'
+    );
+  }, { scope: containerRef });
+
   return (
-    <section id="hero" style={{
-      position: 'relative',
-      backgroundColor: 'var(--color-white)',
-      overflow: 'hidden',
-      paddingTop: '4rem',
-      paddingBottom: '5rem',
-      minHeight: '85vh',
-      display: 'flex',
-      alignItems: 'center'
-    }}>
+    <section 
+      ref={containerRef}
+      id="hero" 
+      style={{
+        position: 'relative',
+        backgroundColor: 'var(--color-white)',
+        overflow: 'hidden',
+        paddingTop: '4rem',
+        paddingBottom: '5rem',
+        minHeight: '85vh',
+        display: 'flex',
+        alignItems: 'center'
+      }}
+    >
       {/* Background Image Layer on Right Half */}
       <div 
         className="hero-bg-right"
@@ -76,55 +126,67 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking }) => {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'flex-start'
-        }} className="animate-fade-in">
+        }}>
           
           {/* Pill Badge */}
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            backgroundColor: 'var(--color-light-teal)',
-            color: 'var(--color-teal-dark)',
-            padding: '0.4rem 0.9rem',
-            borderRadius: 'var(--radius-full)',
-            fontSize: '0.875rem',
-            fontWeight: 600,
-            marginBottom: '1.25rem',
-            boxShadow: 'var(--shadow-sm)'
-          }}>
+          <div 
+            className="gsap-hero-badge"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              backgroundColor: 'var(--color-light-teal)',
+              color: 'var(--color-teal-dark)',
+              padding: '0.4rem 0.9rem',
+              borderRadius: 'var(--radius-full)',
+              fontSize: '0.875rem',
+              fontWeight: 600,
+              marginBottom: '1.25rem',
+              boxShadow: 'var(--shadow-sm)'
+            }}
+          >
             <span>Klinik Gigi Modern & Terpercaya di Jakarta</span>
           </div>
 
           {/* Main Headline */}
-          <h1 style={{
-            fontSize: 'clamp(2.25rem, 4.5vw, 3.5rem)',
-            lineHeight: 1.15,
-            fontWeight: 800,
-            color: 'var(--color-dark-gray)',
-            letterSpacing: '-0.03em',
-            marginBottom: '1.25rem'
-          }}>
+          <h1 
+            className="gsap-hero-title"
+            style={{
+              fontSize: 'clamp(2.25rem, 4.5vw, 3.5rem)',
+              lineHeight: 1.15,
+              fontWeight: 800,
+              color: 'var(--color-dark-gray)',
+              letterSpacing: '-0.03em',
+              marginBottom: '1.25rem'
+            }}
+          >
             Senyum Sehat & Indah Dimulai dari <span className="text-gradient">OGII DENTAL</span>
           </h1>
 
           {/* Sub-headline */}
-          <p style={{
-            fontSize: '1.125rem',
-            color: 'var(--color-slate-600)',
-            lineHeight: 1.6,
-            marginBottom: '2rem'
-          }}>
+          <p 
+            className="gsap-hero-subtitle"
+            style={{
+              fontSize: '1.125rem',
+              color: 'var(--color-slate-600)',
+              lineHeight: 1.6,
+              marginBottom: '2rem'
+            }}
+          >
             Pengalaman perawatan gigi tanpa rasa cemas dengan dokter spesialis berpengalaman, teknologi radiologi digital 3D, dan sistem booking tanpa antre.
           </p>
 
           {/* Action Buttons */}
-          <div style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '1rem',
-            width: '100%',
-            marginBottom: '2.5rem'
-          }}>
+          <div 
+            className="gsap-hero-actions"
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '1rem',
+              width: '100%',
+              marginBottom: '2.5rem'
+            }}
+          >
             <button
               onClick={onOpenBooking}
               style={{
@@ -187,18 +249,21 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking }) => {
           </div>
 
           {/* Floating Trust Badge & Doctor Card */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: '1.25rem',
-            padding: '1rem 1.25rem',
-            backgroundColor: 'rgba(255, 255, 255, 0.92)',
-            backdropFilter: 'blur(8px)',
-            borderRadius: 'var(--radius-xl)',
-            border: '1px solid var(--color-slate-300)',
-            boxShadow: 'var(--shadow-md)'
-          }}>
+          <div 
+            className="gsap-hero-trust-card"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '1.25rem',
+              padding: '1rem 1.25rem',
+              backgroundColor: 'rgba(255, 255, 255, 0.92)',
+              backdropFilter: 'blur(8px)',
+              borderRadius: 'var(--radius-xl)',
+              border: '1px solid var(--color-slate-300)',
+              boxShadow: 'var(--shadow-md)'
+            }}
+          >
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <img
                 src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=100&q=80"

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { 
   IconSparkles, 
   IconSun, 
@@ -8,14 +8,54 @@ import {
   IconActivity, 
   IconArrowRight
 } from '@tabler/icons-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import { SERVICES_DATA } from '../services/mockData';
 import type { Service } from '../types';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface ServicesSectionProps {
   onSelectService: (service: Service) => void;
 }
 
 export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectService }) => {
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    // Reveal Section Header
+    gsap.fromTo('.gsap-services-header',
+      { opacity: 0, y: 40 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.gsap-services-header',
+          start: 'top 85%'
+        }
+      }
+    );
+
+    // Stagger reveal for Service Cards
+    gsap.fromTo('.gsap-service-card',
+      { opacity: 0, y: 50 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.7,
+        stagger: 0.15,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.gsap-services-grid',
+          start: 'top 80%'
+        }
+      }
+    );
+  }, { scope: sectionRef });
+
   // Dynamic Tabler Icon Resolver (with large decorative sizing & subtle teal color)
   const renderBackgroundIcon = (iconName: string) => {
     const props = { size: 140, color: 'rgba(44, 122, 123, 0.07)', stroke: 1.2 };
@@ -31,11 +71,11 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
   };
 
   return (
-    <section id="services" className="section-padding" style={{ backgroundColor: 'var(--color-light-gray)' }}>
+    <section ref={sectionRef} id="services" className="section-padding" style={{ backgroundColor: 'var(--color-light-gray)' }}>
       <div className="container">
         
         {/* Section Header */}
-        <div style={{ textAlign: 'center', maxWidth: '42rem', margin: '0 auto 3.5rem auto' }}>
+        <div className="gsap-services-header" style={{ textAlign: 'center', maxWidth: '42rem', margin: '0 auto 3.5rem auto' }}>
           <span style={{
             fontSize: '0.875rem',
             fontWeight: 700,
@@ -54,7 +94,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
         </div>
 
         {/* Services Grid */}
-        <div style={{
+        <div className="gsap-services-grid" style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
           gap: '1.75rem'
@@ -62,28 +102,29 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
           {SERVICES_DATA.map((service) => (
             <div
               key={service.id}
+              className="gsap-service-card"
               style={{
                 position: 'relative',
                 overflow: 'hidden',
                 backgroundColor: 'var(--color-white)',
                 borderRadius: 'var(--radius-xl)',
                 padding: '2rem',
-                border: '1px solid rgba(226, 232, 240, 0.7)',
-                boxShadow: '0 1px 2px rgba(0, 0, 0, 0.03)',
+                border: 'none',
+                boxShadow: 'none',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
                 transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-3px)';
-                e.currentTarget.style.boxShadow = '0 6px 16px rgba(0, 0, 0, 0.05)';
-                e.currentTarget.style.borderColor = 'rgba(44, 122, 123, 0.4)';
+                e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(0, 0, 0, 0.08)';
+                e.currentTarget.style.borderColor = 'rgba(44, 122, 123, 0.3)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 1px 2px rgba(0, 0, 0, 0.03)';
-                e.currentTarget.style.borderColor = 'rgba(226, 232, 240, 0.7)';
+                e.currentTarget.style.boxShadow = 'none';
+                e.currentTarget.style.borderColor = 'transparent';
               }}
             >
               {/* Large Watermark Background Icon */}

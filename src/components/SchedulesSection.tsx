@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   IconCalendar, 
   IconClock, 
@@ -6,18 +6,72 @@ import {
   IconFilter,
   IconCircleCheck
 } from '@tabler/icons-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import { DOCTORS_DATA, SCHEDULES_DATA } from '../services/mockData';
 import type { Doctor, Schedule, ScheduleStatus } from '../types';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface SchedulesSectionProps {
   onSelectDoctorSchedule: (doctor: Doctor, schedule: Schedule) => void;
 }
 
 export const SchedulesSection: React.FC<SchedulesSectionProps> = ({ onSelectDoctorSchedule }) => {
+  const sectionRef = useRef<HTMLDivElement>(null);
   const [selectedDay, setSelectedDay] = useState<string>('Semua');
   const [selectedDoctorId, setSelectedDoctorId] = useState<string>('Semua');
 
   const daysList = ['Semua', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+
+  useGSAP(() => {
+    // Header reveal
+    gsap.fromTo('.gsap-schedules-header',
+      { opacity: 0, y: 40 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.gsap-schedules-header',
+          start: 'top 85%'
+        }
+      }
+    );
+
+    // Filter bar reveal
+    gsap.fromTo('.gsap-schedules-filter',
+      { opacity: 0, y: 30 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.7,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.gsap-schedules-filter',
+          start: 'top 85%'
+        }
+      }
+    );
+
+    // Cards reveal
+    gsap.fromTo('.gsap-schedule-card',
+      { opacity: 0, y: 45 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.gsap-schedules-grid',
+          start: 'top 85%'
+        }
+      }
+    );
+  }, { scope: sectionRef, dependencies: [selectedDay, selectedDoctorId] });
 
   // Status Badge Styling Helper
   const getStatusBadge = (status: ScheduleStatus) => {
@@ -62,11 +116,11 @@ export const SchedulesSection: React.FC<SchedulesSectionProps> = ({ onSelectDoct
   });
 
   return (
-    <section id="schedules" className="section-padding" style={{ backgroundColor: 'var(--color-white)' }}>
+    <section ref={sectionRef} id="schedules" className="section-padding" style={{ backgroundColor: 'var(--color-white)' }}>
       <div className="container">
         
         {/* Section Header */}
-        <div style={{ textAlign: 'center', maxWidth: '42rem', margin: '0 auto 3rem auto' }}>
+        <div className="gsap-schedules-header" style={{ textAlign: 'center', maxWidth: '42rem', margin: '0 auto 3rem auto' }}>
           <span style={{
             fontSize: '0.875rem',
             fontWeight: 700,
@@ -85,7 +139,7 @@ export const SchedulesSection: React.FC<SchedulesSectionProps> = ({ onSelectDoct
         </div>
 
         {/* Filter Controls Bar */}
-        <div style={{
+        <div className="gsap-schedules-filter" style={{
           backgroundColor: 'var(--color-light-gray)',
           padding: '1.25rem',
           borderRadius: 'var(--radius-xl)',
@@ -173,7 +227,7 @@ export const SchedulesSection: React.FC<SchedulesSectionProps> = ({ onSelectDoct
             </p>
           </div>
         ) : (
-          <div style={{
+          <div className="gsap-schedules-grid" style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
             gap: '1.5rem'
@@ -188,24 +242,27 @@ export const SchedulesSection: React.FC<SchedulesSectionProps> = ({ onSelectDoct
               return (
                 <div
                   key={sch.id}
+                  className="gsap-schedule-card"
                   style={{
                     backgroundColor: 'var(--color-white)',
                     borderRadius: 'var(--radius-xl)',
-                    border: '1px solid var(--color-slate-300)',
+                    border: '1px solid rgba(226, 232, 240, 0.7)',
                     padding: '1.5rem',
-                    boxShadow: 'var(--shadow-sm)',
+                    boxShadow: 'none',
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
-                    transition: 'all 0.2s ease'
+                    transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--color-teal)';
-                    e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+                    e.currentTarget.style.transform = 'translateY(-3px)';
+                    e.currentTarget.style.borderColor = 'rgba(44, 122, 123, 0.4)';
+                    e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(0, 0, 0, 0.08)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--color-slate-300)';
-                    e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.borderColor = 'rgba(226, 232, 240, 0.7)';
+                    e.currentTarget.style.boxShadow = 'none';
                   }}
                 >
                   <div>
