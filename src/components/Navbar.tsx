@@ -152,23 +152,25 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking }) => {
         </nav>
 
         {/* CTA Button & Mobile Toggle */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
           <button
             onClick={onOpenBooking}
+            className="nav-cta-btn"
             style={{
               backgroundColor: 'var(--color-teal)',
               color: 'var(--color-white)',
               border: 'none',
               borderRadius: 'var(--radius-md)',
-              padding: '0.625rem 1.25rem',
-              fontSize: '0.9375rem',
+              padding: '0.5rem 1rem',
+              fontSize: '0.875rem',
               fontWeight: 600,
               cursor: 'pointer',
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '0.5rem',
+              gap: '0.375rem',
               boxShadow: 'var(--shadow-teal)',
-              transition: 'all 0.2s ease'
+              transition: 'all 0.2s ease',
+              whiteSpace: 'nowrap'
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = 'var(--color-teal-dark)';
@@ -179,8 +181,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking }) => {
               e.currentTarget.style.transform = 'translateY(0)';
             }}
           >
-            <IconCalendarEvent size={18} />
-            Buat Janji Temu
+            <IconCalendarEvent size={16} />
+            <span className="cta-btn-text">Buat Janji</span>
           </button>
 
           {/* Hamburger Button */}
@@ -191,7 +193,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking }) => {
               backgroundColor: 'transparent',
               border: '1px solid var(--color-slate-300)',
               borderRadius: 'var(--radius-sm)',
-              padding: '0.5rem',
+              padding: '0.45rem',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -200,7 +202,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking }) => {
             }}
             className="mobile-toggle"
           >
-            {isMobileMenuOpen ? <IconX size={24} /> : <IconMenu2 size={24} />}
+            {isMobileMenuOpen ? <IconX size={22} /> : <IconMenu2 size={22} />}
           </button>
         </div>
       </div>
@@ -210,10 +212,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking }) => {
         <div style={{
           backgroundColor: 'var(--color-white)',
           borderBottom: '1px solid var(--color-slate-300)',
-          padding: '1rem 1.5rem',
+          padding: '1.25rem 1.5rem',
           display: 'flex',
           flexDirection: 'column',
-          gap: '0.75rem'
+          gap: '1rem',
+          boxShadow: 'var(--shadow-md)'
         }}>
           {navLinks.map((link) => (
             <a
@@ -223,9 +226,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking }) => {
               style={{
                 color: 'var(--color-dark-gray)',
                 textDecoration: 'none',
-                fontSize: '1rem',
+                fontSize: '0.9375rem',
                 fontWeight: 500,
-                padding: '0.5rem 0'
+                padding: '0.5rem 0.75rem',
+                borderRadius: 'var(--radius-sm)',
+                backgroundColor: 'var(--color-light-gray)',
+                transition: 'background-color 0.2s ease'
               }}
             >
               {link.name}
@@ -236,9 +242,27 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking }) => {
 
       {/* Style element for responsive navigation display */}
       <style>{`
+        @media (max-width: 640px) {
+          .nav-cta-btn {
+            padding: 0.4rem 0.75rem !important;
+            font-size: 0.8125rem !important;
+          }
+          .cta-btn-text::after {
+            content: " Temu";
+          }
+        }
+        @media (min-width: 641px) {
+          .cta-btn-text::after {
+            content: " Temu";
+          }
+        }
         @media (min-width: 1024px) {
           .desktop-nav { display: flex !important; }
           .mobile-toggle { display: none !important; }
+          .nav-cta-btn {
+            padding: 0.625rem 1.25rem !important;
+            font-size: 0.9375rem !important;
+          }
         }
       `}</style>
     </header>
